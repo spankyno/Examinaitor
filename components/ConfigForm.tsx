@@ -9,8 +9,8 @@ interface ConfigFormProps {
 export const ConfigForm: React.FC<ConfigFormProps> = ({ onStart, isLoading }) => {
   const [topic, setTopic] = useState('');
   const [file, setFile] = useState<File | null>(null);
-  const [numQuestions, setNumQuestions] = useState(10);
-  const [numOptions, setNumOptions] = useState(3);
+  const [numQuestions, setNumQuestions] = useState<number | ''>(10);
+  const [numOptions, setNumOptions] = useState<number | ''>(3);
   const [mode, setMode] = useState<QuizMode>(QuizMode.MULTIPLE_CHOICE);
   const [difficulty, setDifficulty] = useState<Difficulty>(Difficulty.MEDIUM);
   const [dragActive, setDragActive] = useState(false);
@@ -48,6 +48,21 @@ export const ConfigForm: React.FC<ConfigFormProps> = ({ onStart, isLoading }) =>
     }
   };
 
+  const handleNumberChange = (
+    e: React.ChangeEvent<HTMLInputElement>, 
+    setter: React.Dispatch<React.SetStateAction<number | ''>>
+  ) => {
+    const value = e.target.value;
+    if (value === '') {
+      setter('');
+    } else {
+      const parsed = parseInt(value);
+      if (!isNaN(parsed)) {
+        setter(parsed);
+      }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -70,8 +85,8 @@ export const ConfigForm: React.FC<ConfigFormProps> = ({ onStart, isLoading }) =>
       topic: topic || "Conocimiento General",
       fileBase64,
       fileMimeType: file?.type,
-      numQuestions,
-      numOptions,
+      numQuestions: Number(numQuestions) || 10,
+      numOptions: Number(numOptions) || 3,
       mode,
       difficulty
     });
@@ -136,7 +151,7 @@ export const ConfigForm: React.FC<ConfigFormProps> = ({ onStart, isLoading }) =>
             min={1} 
             max={20} 
             value={numQuestions}
-            onChange={(e) => setNumQuestions(parseInt(e.target.value))}
+            onChange={(e) => handleNumberChange(e, setNumQuestions)}
             className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-primary focus:outline-none"
           />
         </div>
@@ -175,7 +190,7 @@ export const ConfigForm: React.FC<ConfigFormProps> = ({ onStart, isLoading }) =>
               min={2} 
               max={5} 
               value={numOptions}
-              onChange={(e) => setNumOptions(parseInt(e.target.value))}
+              onChange={(e) => handleNumberChange(e, setNumOptions)}
               className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-primary focus:outline-none"
             />
           </div>
