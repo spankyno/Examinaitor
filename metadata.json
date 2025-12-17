@@ -1,0 +1,5 @@
+{
+  "name": "Examinaitor",
+  "description": "An AI-powered quiz generator that creates tests from topics or PDF documents.",
+  "requestFramePermissions": []
+}
